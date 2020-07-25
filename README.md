@@ -8,7 +8,13 @@ This software works with Windows 10 and **NVIDIA Quadro** graphic cards, e.g.  K
 ![Preview](Stuff/Preview.jpg)
 
 ## Build the project
-To build the project you need Visual Studio:
+### Prerequisites
+- Visual Studio 2019
+- WiX Toolset
+- WiX Toolset Visual Studio 2019 Extension
+
+### Build
+- Open PanoBeam.sln in Visual Studio
 - Switch to Release - Any CPU
 - Rebuild Solution
 - Build PanoBeamSetup
