@@ -478,7 +478,7 @@ namespace PanoBeamLib
             xOffset += screen.Bounds.X;
             var yOffset = screen.Bounds.Y;
             var vertices = new List<float>();
-            // ReSharper disable once ForCanBeConvertedToForeach
+
             for (var i = 0; i < TriangleStrip.Length; i++)
             {
                 vertices.AddRange(new float[]

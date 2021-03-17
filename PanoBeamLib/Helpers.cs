@@ -12,10 +12,10 @@ namespace PanoBeamLib
         public static bool IsDevComputer => Environment.MachineName == "SURFACE" ||
                                             Environment.MachineName == "BUEROx";
 
-        public static int TestWarp()
+        /*public static int TestWarp()
         {
             return NvApi.TestWarp();
-        }
+        }*/
 
         public static void InitTempDir()
         {
@@ -53,6 +53,16 @@ namespace PanoBeamLib
                 Bounds = s.Bounds,
                 DeviceName = s.DeviceName
             }).ToArray();
+        }
+
+        public static Screen GetPanoScreen()
+        {
+            return GetPanoScreen(GetScreens());
+        }
+
+        public static Screen GetPanoScreen(Screen[] screens)
+        {
+            return screens.First(s => s.Bounds.Width / s.Bounds.Height == 3);
         }
 
         public static bool IsInPolygon(int nvert, int[] vertx, int[] verty, int testx, int testy)

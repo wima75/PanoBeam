@@ -27,7 +27,7 @@ namespace PanoBeam
             var mosaicInfo = PanoScreen.GetMosaicInfo();
 
             var screens = Helpers.GetScreens();
-            var mainScreen = screens.First(s => s.Bounds.Width / s.Bounds.Height == 3);
+            var mainScreen = Helpers.GetPanoScreen(screens);
             var secondScreen = screens.First(s => s.DeviceName != mainScreen.DeviceName);
 
             var screenView = new ScreenView

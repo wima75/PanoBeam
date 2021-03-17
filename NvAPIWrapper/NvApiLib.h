@@ -20,7 +20,7 @@ extern "C" __declspec(dllexport) int GetMosaicInfo(MosaicInfo* mosaicInfo);
 
 extern "C" __declspec(dllexport) int Warp(NvU32 displayId, float vertices[], int numVertices);
 
-extern "C" __declspec(dllexport) int TestWarp();
+//extern "C" __declspec(dllexport) int TestWarp();
 
 extern "C" __declspec(dllexport) int WarpMultiple(NvU32 displayIds[], int count, float vertices[], int numVertices);
 

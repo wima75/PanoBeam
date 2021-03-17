@@ -453,7 +453,7 @@ namespace PanoBeamLib
 
         private WarpData GetWarpData()
         {
-            var panoScreen = Helpers.GetScreens().OrderByDescending(s => s.Bounds.Width).First();
+            var panoScreen = Helpers.GetPanoScreen();
             return new WarpData
             {
                 Vertices0 = _projectors[0].GetVertices(panoScreen),

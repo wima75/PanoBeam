@@ -12,7 +12,7 @@ void GetError(NvAPI_Status errorcode, Error* error) {
 	NvAPI_GetErrorMessage(errorcode, error->Message);
 }
 
-int TestWarp() {
+/*int TestWarp() {
 	NvAPI_Status error;
 	NvPhysicalGpuHandle nvGPUHandles[NVAPI_MAX_PHYSICAL_GPUS];
 	NvU32 gpuCount = 0;
@@ -320,7 +320,7 @@ int TestWarp() {
 	}	//end of loop gpus
 
 	return 1;
-}
+}*/
 
 int Initialize() {
 	//FILELog::ReportingLevel() = logDEBUG;

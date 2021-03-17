@@ -13,8 +13,8 @@ namespace PanoBeamLib
         [DllImport(@"NvAPIWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int Warp(uint displayId, float[] vertices, int numVertices);
 
-        [DllImport(@"NvAPIWrapper", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int TestWarp();
+        //[DllImport(@"NvAPIWrapper", CallingConvention = CallingConvention.Cdecl)]
+        //public static extern int TestWarp();
 
         [DllImport(@"NvAPIWrapper", CallingConvention = CallingConvention.Cdecl)]
         public static extern int WarpMultiple(uint[] displayIds, int count, float[] vertices, int numVertices);
