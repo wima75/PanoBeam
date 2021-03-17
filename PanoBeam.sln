@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanoBeamLib", "PanoBeamLib\PanoBeamLib.csproj", "{834E96EB-09D2-40D0-8524-AB46A372EF44}"
 EndProject
@@ -23,25 +23,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanoBeam.Controls", "PanoBeamControls\PanoBeam.Controls.csproj", "{2F3083CC-7319-45AC-934D-DA116068210A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanoBeam.Configuration", "PanoBeamConfiguration\PanoBeam.Configuration.csproj", "{9EB07904-14E6-444A-99C3-D9EBB5C09593}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NvAPI", "NvAPI", "{09D8EB8F-1C58-42ED-8C11-D75E31505F2B}"
-	ProjectSection(SolutionItems) = preProject
-		NvAPI\nvapi.h = NvAPI\nvapi.h
-		NvAPI\nvapi.lib = NvAPI\nvapi.lib
-		NvAPI\nvapi_lite_common.h = NvAPI\nvapi_lite_common.h
-		NvAPI\nvapi_lite_d3dext.h = NvAPI\nvapi_lite_d3dext.h
-		NvAPI\nvapi_lite_salend.h = NvAPI\nvapi_lite_salend.h
-		NvAPI\nvapi_lite_salstart.h = NvAPI\nvapi_lite_salstart.h
-		NvAPI\nvapi_lite_sli.h = NvAPI\nvapi_lite_sli.h
-		NvAPI\nvapi_lite_stereo.h = NvAPI\nvapi_lite_stereo.h
-		NvAPI\nvapi_lite_surround.h = NvAPI\nvapi_lite_surround.h
-		NvAPI\NvApiDriverSettings.c = NvAPI\NvApiDriverSettings.c
-		NvAPI\NvApiDriverSettings.h = NvAPI\NvApiDriverSettings.h
-		NvAPI\nvHLSLExtns.h = NvAPI\nvHLSLExtns.h
-		NvAPI\nvHLSLExtnsInternal.h = NvAPI\nvHLSLExtnsInternal.h
-		NvAPI\nvShaderExtnEnums.h = NvAPI\nvShaderExtnEnums.h
-		NvAPI\version.txt = NvAPI\version.txt
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NvAPIWrapper", "NvAPIWrapper\NvAPIWrapper.vcxproj", "{1D4DEFEB-1C6B-4CE1-8E8F-504E67A99976}"
 EndProject
