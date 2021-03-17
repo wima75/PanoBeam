@@ -20,9 +20,9 @@ namespace PanoBeamDebug
 
         public void WarpTest()
         {
-            var res = PanoBeamLib.Helpers.TestWarp();
+            /*var res = PanoBeamLib.Helpers.TestWarp();
             Console.WriteLine(res);
-            Console.ReadKey();
+            Console.ReadKey();*/
         }
 
         public void DetectShapes()

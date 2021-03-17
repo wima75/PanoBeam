@@ -82,7 +82,7 @@
             </controls:MetroAnimatedSingleRowTabControl>
 
             <StatusBar Grid.Row="2">
-                <StatusBarItem>Ⓒ 2017 by alphasoft marco wittwer</StatusBarItem>
+                <StatusBarItem>Ⓒ 2021 by alphasoft marco wittwer</StatusBarItem>
                 <StatusBarItem HorizontalAlignment="Right">superpanorama.ch</StatusBarItem>
             </StatusBar>
         </Grid>

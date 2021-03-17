@@ -35,7 +35,7 @@
         <Image x:Name="BeamerLinks" Source="BeamerLinks.png" Opacity="0" />
         <Image x:Name="BeamerRechts" Source="BeamerRechts.png" Opacity="0" />
         <Label x:Name="LabelVersion" Content="{Binding Converter={StaticResource VersionConverter}}" HorizontalAlignment="Left" Margin="38,252,0,0" VerticalAlignment="Top" Foreground="Black"/>
-        <Label Content="© 2017 by alphasoft marco wittwer" HorizontalAlignment="Left" Margin="37,376,0,0" VerticalAlignment="Top" FontFamily="Arial Rounded MT Bold" Foreground="Black" FontSize="14"/>
+        <Label Content="© 2021 by alphasoft marco wittwer" HorizontalAlignment="Left" Margin="37,376,0,0" VerticalAlignment="Top" FontFamily="Arial Rounded MT Bold" Foreground="Black" FontSize="14"/>
         <Label Content="alphasoft.ch" HorizontalAlignment="Left" Margin="37,394,0,0" VerticalAlignment="Top" FontFamily="Arial Rounded MT Bold" Foreground="Black" FontSize="14"/>
         <Label Content="superpanorama.ch" HorizontalAlignment="Right" Margin="0,394,482,0" VerticalAlignment="Top" FontFamily="Arial Rounded MT Bold" Foreground="Black" FontSize="14"/>
 
