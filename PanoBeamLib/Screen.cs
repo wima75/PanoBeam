@@ -7,5 +7,7 @@ namespace PanoBeamLib
         public bool Primary { get; internal set; }
 
         public Rectangle Bounds { get; internal set; }
+
+        public string DeviceName { get; internal set; }
     }
 }

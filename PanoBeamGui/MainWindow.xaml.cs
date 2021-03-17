@@ -27,13 +27,13 @@ namespace PanoBeam
             var mosaicInfo = PanoScreen.GetMosaicInfo();
 
             var screens = Helpers.GetScreens();
-            var widestScreen = screens.OrderByDescending(s => s.Bounds.Width).First();
-            var smallestScreen = screens.OrderBy(s => s.Bounds.Width).First();
+            var mainScreen = screens.First(s => s.Bounds.Width / s.Bounds.Height == 3);
+            var secondScreen = screens.First(s => s.DeviceName != mainScreen.DeviceName);
 
             var screenView = new ScreenView
             {
-                Left = widestScreen.Bounds.X,
-                Top = widestScreen.Bounds.Y,
+                Left = mainScreen.Bounds.X,
+                Top = mainScreen.Bounds.Y,
                 Overlap = mosaicInfo.Overlap,
                 Resolution = new Size((int) mosaicInfo.ProjectorWidth * 2 - mosaicInfo.Overlap,
                     (int) mosaicInfo.ProjectorHeight)
@@ -47,8 +47,8 @@ namespace PanoBeam
             Loaded += (sender, eventArgs) =>
             {
 
-                Left = smallestScreen.Bounds.X + 50;
-                Top = smallestScreen.Bounds.Y + 50;
+                Left = secondScreen.Bounds.X + 50;
+                Top = secondScreen.Bounds.Y + 50;
 
                 _viewModel.Initialize();
 
@@ -171,7 +171,6 @@ namespace PanoBeam
                 }
                 else
                 {
-                    // ReSharper disable once LocalizableElement
                     Console.WriteLine("Cancel");
                     calibrationCanceled();
                 }

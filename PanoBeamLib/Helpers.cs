@@ -14,15 +14,13 @@ namespace PanoBeamLib
 
         public static void InitTempDir()
         {
-            Debug.WriteLine("Init temp dir");
             var path = TempDir;
             if (Directory.Exists(path))
             {
                 Directory.Delete(path, true);
             }
-            Debug.WriteLine("Create temp dir");
             Directory.CreateDirectory(path);
-            Debug.WriteLine("Temp dir created");
+            Debug.WriteLine($"Temp Directory: {path}");
         }
 
         public static string TempDir => Path.Combine(Path.GetTempPath(), "PanoBeam");
@@ -47,7 +45,8 @@ namespace PanoBeamLib
             return System.Windows.Forms.Screen.AllScreens.Select(s => new Screen
             {
                 Primary = s.Primary,
-                Bounds = s.Bounds
+                Bounds = s.Bounds,
+                DeviceName = s.DeviceName
             }).ToArray();
         }
 
