@@ -357,6 +357,9 @@ namespace PanoBeamLib
                 //errorCode = NvApi.Warp(_projectors[1].DisplayId, data.Vertices1, data.NumVertices);
                 //HandleNvApiError(errorCode);
 
+                /*var errorCode = NvApi.Warp(_projectors[0].DisplayId, data.Vertices0, data.NumVertices);
+                HandleNvApiError(errorCode);*/
+
                 var displayIds = new[] { _projectors[0].DisplayId, _projectors[1].DisplayId };
                 var errorCode = NvApi.WarpMultiple(displayIds, displayIds.Length, data.Vertices0.Concat(data.Vertices1).ToArray(), data.NumVertices);
                 HandleNvApiError(errorCode);

@@ -12,6 +12,11 @@ namespace PanoBeamLib
         public static bool IsDevComputer => Environment.MachineName == "SURFACE" ||
                                             Environment.MachineName == "BUEROx";
 
+        public static int TestWarp()
+        {
+            return NvApi.TestWarp();
+        }
+
         public static void InitTempDir()
         {
             var path = TempDir;

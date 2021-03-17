@@ -5,6 +5,7 @@ using AForge.Imaging;
 using AForge.Imaging.Filters;
 using PanoBeamLib;
 using Image = System.Drawing.Image;
+using System;
 
 namespace PanoBeamDebug
 {
@@ -13,7 +14,15 @@ namespace PanoBeamDebug
         static void Main(string[] args)
         {
             //new Program().DetectSurface();
-            new Program().DetectShapes();
+            //new Program().DetectShapes();
+            new Program().WarpTest();
+        }
+
+        public void WarpTest()
+        {
+            var res = PanoBeamLib.Helpers.TestWarp();
+            Console.WriteLine(res);
+            Console.ReadKey();
         }
 
         public void DetectShapes()
