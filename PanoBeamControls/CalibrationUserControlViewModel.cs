@@ -28,20 +28,6 @@ namespace PanoBeam.Controls
             _startCanExecute = !value;
         }
 
-        //private CalibrationData GetCalibrationData()
-        //{
-        //    return new CalibrationData
-        //    {
-        //        ControlPointsMode = ControlPointsMode,
-        //        WireframeVisible = ShowWireframe,
-        //        ControlPointsInsideOverlap = ControlPointsInsideOverlap,
-        //        PatternSize = PatternSize,
-        //        PatternCount = PatternCount,
-        //        ImmediateWarp = ImmediateWarp,
-        //        KeepCorners = KeepCorners
-        //    };
-        //}
-
         #region Commands
         private bool _startCanExecute = true;
         private ICommand _startCommand;
@@ -53,22 +39,6 @@ namespace PanoBeam.Controls
                 return _startCommand ?? (_startCommand = new CommandHandler(StartAction, param => _startCanExecute));
             }
         }
-
-        //private bool _updateSettingsCanExecute = true;
-        //private ICommand _updateSettingsCommand;
-
-        //public ICommand UpdateSettingsCommand
-        //{
-        //    get
-        //    {
-        //        return _updateSettingsCommand ?? (_updateSettingsCommand = new CommandHandler(UpdateSettingsAction, param => _updateSettingsCanExecute));
-        //    }
-        //}
-
-        //private void UpdateSettingsAction()
-        //{
-        //    EventHelper.SendEvent<CalibrationDataChanged, CalibrationData>(GetCalibrationData());
-        //}
 
         #endregion
 
@@ -147,21 +117,8 @@ namespace PanoBeam.Controls
                 Configuration.Configuration.Instance.Settings.ControlPointsMode = value;
                 OnPropertyChanged();
                 SettingsChanged();
-                //EventHelper.SendEvent<CalibrationDataChanged, CalibrationData>(GetCalibrationData());
             }
         }
-
-        //private Size[] _patternCountList;
-
-        //public Size[] PatternCountList
-        //{
-        //    get { return _patternCountList; }
-        //    set
-        //    {
-        //        _patternCountList = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
 
         public Size PatternCount => new Size(ControlPointsCountX, ControlPointsCountY);
 
@@ -173,7 +130,6 @@ namespace PanoBeam.Controls
                 Configuration.Configuration.Instance.Settings.ShowWireframe = value;
                 OnPropertyChanged();
                 SettingsChanged();
-                //EventHelper.SendEvent<CalibrationDataChanged, CalibrationData>(GetCalibrationData());
             }
         }
 
@@ -185,7 +141,6 @@ namespace PanoBeam.Controls
                 Configuration.Configuration.Instance.Settings.ControlPointsInsideOverlap = value;
                 OnPropertyChanged();
                 SettingsChanged();
-                //EventHelper.SendEvent<CalibrationDataChanged, CalibrationData>(GetCalibrationData());
             }
         }
 
@@ -197,7 +152,6 @@ namespace PanoBeam.Controls
                 Configuration.Configuration.Instance.Settings.KeepCorners = value;
                 OnPropertyChanged();
                 SettingsChanged();
-                //EventHelper.SendEvent<CalibrationDataChanged, CalibrationData>(GetCalibrationData());
             }
         }
 
@@ -209,7 +163,6 @@ namespace PanoBeam.Controls
                 Configuration.Configuration.Instance.Settings.ImmediateWarp = value;
                 OnPropertyChanged();
                 SettingsChanged();
-                //EventHelper.SendEvent<CalibrationDataChanged, CalibrationData>(GetCalibrationData());
             }
         }
 

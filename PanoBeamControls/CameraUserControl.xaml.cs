@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PanoBeam.Events;
+using PanoBeam.Events.Events;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -109,6 +111,7 @@ namespace PanoBeam.Controls
         {
             var rect = _clp.GetScaledClippingRectangle(_imageWidth, _imageHeight);
             _viewModel.SetClippingRectangle(rect);
+            EventHelper.SendEvent<SettingsChanged, EventArgs>(null);
         }
     }
 }

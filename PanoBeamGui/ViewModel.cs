@@ -31,10 +31,6 @@ namespace PanoBeam
 
         public ViewModel(ScreenView screen, MosaicInfo mosaicInfo, MainWindow mainWindow)
         {
-            //if (Helpers.IsDevComputer)
-            //{
-            //    _configFilename = @"C:\Temp\PanoBeam.config";
-            //}
             _screenView = screen;
             _mainWindow = mainWindow;
             CameraUserControl = new CameraUserControl();
@@ -55,12 +51,9 @@ namespace PanoBeam
                 }
             };
             _screen.AddProjectors(mosaicInfo.DisplayId0, mosaicInfo.DisplayId1);
-            //_screen.LoadDefaults();
             CalibrationUserControl.Initialize();
             BlendingUserControl.Initialize(_screen.Projectors);
             _screen.CalculationProgress += ScreenOnCalculationProgress;
-
-            //_screen.SetPattern(50, new Size(8, 9));
         }
 
         private void ScreenOnCalculationProgress(float progress)
@@ -89,19 +82,9 @@ namespace PanoBeam
             _screenView.Close();
         }
 
-        /*private void OnCalibrationDataChanged(CalibrationData data)
-        {
-            _screen.SetPattern(data.PatternSize, data.PatternCount);
-            _screenView.UpdateWarpControl(data.ControlPointsVisible, data.WireframeVisible, data.ImmediateWarp);
-            //_screen.InitializeControlPoints();
-            //var controlPoints = new[] {_screen.GetControlPoints(0), _screen.GetControlPoints(1)};
-            //_screenView.UpdateControlPoints(controlPoints);
-        }*/
-
         public bool IsScreenVisible
         {
             get => _screenView.IsVisible;
-            // ReSharper disable once ValueParameterNotUsed
             set
             {
                 if (_screenView.IsVisible)
@@ -114,7 +97,6 @@ namespace PanoBeam
                     _mainWindow.Activate();
                 }
                 OnPropertyChanged();
-                // ReSharper disable once ExplicitCallerInfoArgument
                 OnPropertyChanged(nameof(ScreenButtonToolTip));
             }
         }
@@ -418,28 +400,5 @@ namespace PanoBeam
                 Configuration.Configuration.Instance.Settings.ClippingRectangle = clippingRectangle;
             }
         }
-
-        //public void SaveSettings(CalibrationData calibrationData)
-        //{
-        //    var filename = Path.Combine(GetProgramDataDirectory(), "PanoBeamSettings.config");
-        //    var xmlSerializer = new XmlSerializer(typeof(Settings));
-
-        //    //_screen.UpdateSettings();
-        //    var clippingRectangle = new SimpleRectangle(CameraUserControl.GetClippingRectangle());
-        //    if (clippingRectangle.Width > 0 && clippingRectangle.Height > 0)
-        //    {
-        //        Configuration.Configuration.Instance.Settings.ClippingRectangle = clippingRectangle;
-        //    }
-        //    Configuration.Configuration.Instance.Settings.PatternSize = calibrationData.PatternSize;
-        //    Configuration.Configuration.Instance.Settings.PatternCountX = calibrationData.PatternCount.Width;
-        //    Configuration.Configuration.Instance.Settings.PatternCountY = calibrationData.PatternCount.Height;
-        //    Configuration.Configuration.Instance.Settings.KeepCorners = calibrationData.KeepCorners;
-
-        //    using (var writer = new StreamWriter(filename))
-        //    using (var xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings { Indent = true }))
-        //    {
-        //        xmlSerializer.Serialize(xmlWriter, Configuration.Configuration.Instance.Settings);
-        //    }
-        //}
     }
 }

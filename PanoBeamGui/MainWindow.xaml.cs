@@ -55,17 +55,9 @@ namespace PanoBeam
 
                 _viewModel.LoadSettings();
 
-                //EventHelper.SubscribeEvent<CalibrationDataChanged, CalibrationData>(OnCalibrationDataChanged);
-
                 EventHelper.SendEvent<ApplicationReady, EventArgs>(null);
             };
         }
-
-        //private void OnCalibrationDataChanged(CalibrationData calibrationData)
-        //{
-        //    _viewModel.SaveSettings(calibrationData);
-        //}
-
 
         private ProgressDialogController _controller;
 
