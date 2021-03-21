@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using PanoBeam.Events;
 using PanoBeam.Events.Events;
@@ -14,7 +15,7 @@ namespace PanoBeam
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : MetroWindow
     {
         private readonly ViewModel _viewModel;
 
@@ -35,8 +36,8 @@ namespace PanoBeam
                 Left = mainScreen.Bounds.X,
                 Top = mainScreen.Bounds.Y,
                 Overlap = mosaicInfo.Overlap,
-                Resolution = new Size((int) mosaicInfo.ProjectorWidth * 2 - mosaicInfo.Overlap,
-                    (int) mosaicInfo.ProjectorHeight)
+                Resolution = new Size((int)mosaicInfo.ProjectorWidth * 2 - mosaicInfo.Overlap,
+                    (int)mosaicInfo.ProjectorHeight)
             };
 
             InitializeComponent();
@@ -65,7 +66,7 @@ namespace PanoBeam
         //    _viewModel.SaveSettings(calibrationData);
         //}
 
-        
+
         private ProgressDialogController _controller;
 
         public void ReportProgress(float progress)
@@ -82,7 +83,7 @@ namespace PanoBeam
 
         public async void CalibrationError(string message)
         {
-            if(_controller != null && _controller.IsOpen)
+            if (_controller != null && _controller.IsOpen)
             {
                 await _controller.CloseAsync();
             }
@@ -116,7 +117,7 @@ namespace PanoBeam
                 _controller.SetCancelable(false);
             });
         }
-        
+
         internal async void AwaitProjectorsReady(Action continueAction, Action calibrationCanceled, CalibrationSteps[] calibrationSteps)
         {
             var settings = new MetroDialogSettings

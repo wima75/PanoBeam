@@ -35,7 +35,11 @@
               <File Source="$(var.PanoBeamGui.TargetDir)Accord.Math.dll" />
               <File Source="$(var.PanoBeamGui.TargetDir)Accord.Video.DirectShow.dll" />
               <File Source="$(var.PanoBeamGui.TargetDir)Accord.Video.dll" />
+              <File Source="$(var.PanoBeamGui.TargetDir)ControlzEx.dll " />
               <File Source="$(var.PanoBeamGui.TargetDir)MahApps.Metro.dll" />
+              <File Source="$(var.PanoBeamGui.TargetDir)MahApps.Metro.IconPacks.Core.dll " />
+              <File Source="$(var.PanoBeamGui.TargetDir)MahApps.Metro.IconPacks.Material.dll" />
+              <File Source="$(var.PanoBeamGui.TargetDir)Microsoft.Xaml.Behaviors.dll" />
               <File Source="$(var.PanoBeamGui.TargetDir)NvAPIWrapper.dll" />
               <File Source="$(var.PanoBeamGui.TargetDir)PanoBeam.BlendControls.dll" />
               <File Source="$(var.PanoBeamGui.TargetDir)PanoBeam.Common.dll" />
@@ -44,7 +48,6 @@
               <File Source="$(var.PanoBeamGui.TargetDir)PanoBeam.Controls.dll" />
               <File Source="$(var.PanoBeamGui.TargetDir)PanoBeam.Events.dll" />
               <File Source="$(var.PanoBeamGui.TargetDir)Pngcs.dll" />
-              <File Source="$(var.PanoBeamGui.TargetDir)System.Windows.Interactivity.dll" />
               <File Source="$(var.PanoBeam.TargetPath)" />
             </Component>
           </Directory>

@@ -31,7 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PanoBeamGui\PanoBeamGui.csproj">
       <Name>PanoBeamGui</Name>
-      <Project>{bd3a09fb-bfa1-4c92-b13a-d9b6f010a29a}</Project>
+      <Project>{1c52e852-19ce-41f6-a583-0896aea47a60}</Project>
       <Private>True</Private>
       <DoNotHarvest>True</DoNotHarvest>
       <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>

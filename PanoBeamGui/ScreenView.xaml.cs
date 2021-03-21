@@ -1,20 +1,21 @@
-﻿using System.Drawing;
+﻿using PanoBeamLib;
+using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using PanoBeam.Events;
-using PanoBeam.Events.Data;
-using PanoBeam.Events.Events;
-using PanoBeamLib;
-using System;
 using PanoBeam.Configuration;
+using PanoBeam.Events;
 using PanoBeam.Mapper;
+using PanoBeam.Events.Events;
+using PanoBeam.Events.Data;
+using Size = System.Drawing.Size;
 
 namespace PanoBeam
 {
     /// <summary>
-    /// Interaction logic for Screen.xaml
+    /// Interaction logic for ScreenView.xaml
     /// </summary>
-    public partial class ScreenView
+    public partial class ScreenView : Window
     {
         public ScreenView()
         {
@@ -50,8 +51,8 @@ namespace PanoBeam
             //EventHelper.SubscribeEvent<CalibrationDataChanged, CalibrationData>(OnCalibrationDataChanged);
             EventHelper.SubscribeEvent<ControlPointsMoved, ControlPointData>(OnControlPointsMoved);
             //EventHelper.SubscribeEvent<ApplicationReady, EventArgs>(OnApplicationReady);
-        }   
-        
+        }
+
         public void Refresh(ControlPointsMode controlPointsMode, bool wireframeVisible)
         {
             Dispatcher.Invoke(() => {
@@ -141,7 +142,7 @@ namespace PanoBeam
                 _screen.Warp();
                 Mouse.OverrideCursor = null;
             }
-            else if(e.Key == Key.B)
+            else if (e.Key == Key.B)
             {
                 Mouse.OverrideCursor = Cursors.Wait;
                 _screen.Blend();

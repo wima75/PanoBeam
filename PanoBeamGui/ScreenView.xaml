@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:panoBeamControls="clr-namespace:PanoBeam.Controls;assembly=PanoBeam.Controls"
+        xmlns:local="clr-namespace:PanoBeam"
         mc:Ignorable="d"
         Title="Screen" ResizeMode="NoResize" ShowInTaskbar="False" WindowStyle="None" KeyUp="Window_KeyUp" KeyDown="Window_KeyDown">
     <Grid>
