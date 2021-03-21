@@ -110,6 +110,7 @@ namespace PanoBeam
 
         private void CalibrationUserControlOnStart(int patternSize, Size patternCount, bool keepCorners)
         {
+            EventHelper.SendEvent<CalibrationStarted, EventArgs>(null);
             CalibrationUserControl.SetInProgress(true);
             _screen.CalibrationDone = () =>
             {
@@ -117,14 +118,17 @@ namespace PanoBeam
                 _screenView.Refresh(ControlPointsMode.None, false);
                 _screen.Warp();
                 _mainWindow.CalibrationDone();
+                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
             };
             _screen.CalibrationError = (message) =>
             {
+                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
                 CalibrationUserControl.SetInProgress(false);
                 _mainWindow.CalibrationError(message);
             };
             _screen.CalibrationCanceled = () =>
             {
+                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
                 CalibrationUserControl.SetInProgress(false);
             };
             _screen.SetPattern(patternSize, patternCount, false, false);
@@ -140,7 +144,8 @@ namespace PanoBeam
             _screen.AwaitCalculationsReady = _mainWindow.AwaitCalculationsReady;
             var rect = CameraUserControl.GetClippingRectangle();
             _screen.ClippingRectangle = rect.GetRectangle();
-            if(_screen.ControlPointsAdjusted)
+            
+            if (_screen.ControlPointsAdjusted)
             {
                 _screen.ShowImage = ShowImage;
                 _screen.Calibrate(false);

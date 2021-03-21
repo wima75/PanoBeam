@@ -8,4 +8,8 @@ namespace PanoBeam.Events.Events
     public class SettingsChanged : Event<EventArgs> { }
 
     public class ControlPointsMoved : Event<ControlPointData> { }
+
+    public class CalibrationStarted : Event<EventArgs> { }
+
+    public class CalibrationFinished : Event<EventArgs> { }
 }

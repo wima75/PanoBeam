@@ -9,6 +9,9 @@ using PanoBeam.Mapper;
 using PanoBeam.Events.Events;
 using PanoBeam.Events.Data;
 using Size = System.Drawing.Size;
+using System.Drawing;
+using System.IO;
+using System.Drawing.Imaging;
 
 namespace PanoBeam
 {
@@ -30,6 +33,9 @@ namespace PanoBeam
 
         private bool _isShiftPressed;
 
+        private BitmapImage _white;
+        private BitmapImage _previousImage;
+
         public void Initialize(PanoScreen screen)
         {
             _screen = screen;
@@ -41,6 +47,17 @@ namespace PanoBeam
             Image1.Height = height;
             WarpControl1.Initialize(screen);
 
+            var white = new Bitmap(width, height);
+            var g = Graphics.FromImage(white);
+            g.FillRectangle(Brushes.White, 0, 0, width, height);
+            var ms = new MemoryStream();
+            white.Save(ms, ImageFormat.Png);
+            ms.Position = 0;
+            _white = new BitmapImage();
+            _white.BeginInit();
+            _white.StreamSource = ms;
+            _white.EndInit();
+
             _screen.SetPattern(
                 Configuration.Configuration.Instance.Settings.PatternSize,
                 new Size(Configuration.Configuration.Instance.Settings.PatternCountX, Configuration.Configuration.Instance.Settings.PatternCountY),
@@ -48,10 +65,11 @@ namespace PanoBeam
 
             _screen.UpdateProjectorsFromConfig(ProjectorMapper.MapProjectorsData(Configuration.Configuration.Instance.Projectors));
 
-            //EventHelper.SubscribeEvent<CalibrationDataChanged, CalibrationData>(OnCalibrationDataChanged);
             EventHelper.SubscribeEvent<ControlPointsMoved, ControlPointData>(OnControlPointsMoved);
-            //EventHelper.SubscribeEvent<ApplicationReady, EventArgs>(OnApplicationReady);
+            EventHelper.SubscribeEvent<CalibrationStarted, EventArgs>(OnCalibrationStarted);
+            EventHelper.SubscribeEvent<CalibrationFinished, EventArgs>(OnCalibrationFinished);
         }
+
 
         public void Refresh(ControlPointsMode controlPointsMode, bool wireframeVisible)
         {
@@ -60,12 +78,6 @@ namespace PanoBeam
                 WarpControl1.SetVisibility(controlPointsMode, wireframeVisible);
             });
         }
-
-        //private void OnApplicationReady(EventArgs obj)
-        //{
-        //    //_screen.RefreshPattern(false);
-        //    //WarpControl1.UpdateWarpControl(ControlPointsMode.None);
-        //}
 
         public void UpdateWarpControl()
         {
@@ -81,16 +93,6 @@ namespace PanoBeam
             return new Size(Configuration.Configuration.Instance.Settings.PatternCountX, Configuration.Configuration.Instance.Settings.PatternCountY);
         }
 
-        //private void OnCalibrationDataChanged(CalibrationData calibrationData)
-        //{
-        //    _immediateWarp = calibrationData.ImmediateWarp;
-        //    if (_screen.SetPattern(calibrationData.PatternSize, calibrationData.PatternCount, calibrationData.ControlPointsInsideOverlap, false))
-        //    {
-        //        WarpControl1.UpdateWarpControl(calibrationData.ControlPointsMode);
-        //    }
-        //    WarpControl1.SetVisibility(calibrationData.ControlPointsMode, calibrationData.WireframeVisible);
-        //}
-
         private void OnControlPointsMoved(ControlPointData controlPointData)
         {
             if (Configuration.Configuration.Instance.Settings.ImmediateWarp)
@@ -99,13 +101,28 @@ namespace PanoBeam
             }
         }
 
-        //public void UpdateWarpControl(bool controlPointsVisible, bool wireframeVisible, bool immediateWarp)
-        //{
-        //    WarpControl1.UpdateWarpControl(controlPointsVisible, wireframeVisible);
-        //}
+        private void OnCalibrationStarted(EventArgs obj)
+        {
+            ShowImage(_white);
+            Show();
+            WarpControl1.Visibility = Visibility.Hidden;
+        }
+
+        private void OnCalibrationFinished(EventArgs obj)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                WarpControl1.Visibility = Visibility.Visible;
+                ShowImage(_previousImage);
+            });
+        }
 
         public void ShowImage(BitmapImage image)
         {
+            if (image != _white)
+            {
+                _previousImage = image;
+            }
             Image1.Source = image;
         }
 
@@ -148,11 +165,10 @@ namespace PanoBeam
                 _screen.Blend();
                 Mouse.OverrideCursor = null;
             }
-            else //if (WarpControl1.HasActiveControlPoint)
+            else
             {
                 WarpControl1.KeyPressed(e, _isShiftPressed);
             }
-            //Koordinaten anzeigen
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
