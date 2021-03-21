@@ -3,9 +3,6 @@
 namespace PanoBeam.Controls
 {
     public delegate void CalibrationStartDelegate(int patternSize, Size patternCount, bool keepCorners);
-    /// <summary>
-    /// Interaction logic for CalibrationUserControl.xaml
-    /// </summary>
     public partial class CalibrationUserControl
     {
         public event CalibrationStartDelegate Start;
@@ -14,8 +11,6 @@ namespace PanoBeam.Controls
         public int PatternSize => _viewModel.PatternSize;
 
         public Size PatternCount => _viewModel.PatternCount;
-
-        //private Screen _screen;
 
         public void SetInProgress(bool value)
         {
@@ -27,17 +22,10 @@ namespace PanoBeam.Controls
             InitializeComponent();
             _viewModel = new CalibrationUserControlViewModel {StartAction = RaiseStart};
             DataContext = _viewModel;
-
-            //ControlPointsChanged?.Invoke(_viewModel.GetControlPointsData());
-            //Loaded += (sender, args) =>
-            //{
-            //    var w = Window.GetWindow(this);
-            //};
         }
 
         public void Initialize()
         {
-            //_screen = screen;
         }
 
         public void Refresh()

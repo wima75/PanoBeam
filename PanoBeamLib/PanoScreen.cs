@@ -216,7 +216,6 @@ namespace PanoBeamLib
                 }
                 else if (cp.PatternShape.W < cp.AssociatedPoint.PatternShape.W)
                 {
-                    // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                     if (cp.ControlPointDirections.HasFlag(ControlPointDirections.Right))
                     {
                         cp.AssociatedPoint.PatternShape.ShrinkToWidth(-cp.PatternShape.W, 0);

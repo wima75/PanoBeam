@@ -111,8 +111,6 @@ namespace PanoBeam
         private void CalibrationUserControlOnStart(int patternSize, Size patternCount, bool keepCorners)
         {
             CalibrationUserControl.SetInProgress(true);
-            //_screen.UpdateSettings(keepCorners);
-            //SaveSettings();
             _screen.CalibrationDone = () =>
             {
                 CalibrationUserControl.SetInProgress(false);
@@ -287,11 +285,7 @@ namespace PanoBeam
             CalibrationUserControl.Refresh();
             BlendingUserControl.Refresh();
             _screenView.Refresh(config.Settings.ControlPointsMode, config.Settings.ShowWireframe);
-            ////_screen.InitFromConfig();
-            //CalibrationUserControl.Refresh();
-            //_screenView.Refresh(ControlPointsMode.None, false);
-            //BlendingUserControl.Refresh();
-            ////_screenView.UpdateWarpControl(false, false);
+
             Mouse.OverrideCursor = null;
         }
 
@@ -306,7 +300,7 @@ namespace PanoBeam
             }
             Configuration.Configuration.Instance.Settings.UpdateSettings(settings);
             _screen.Update(settings.PatternSize, new Size(settings.PatternCountX, settings.PatternCountY), settings.KeepCorners, settings.ControlPointsInsideOverlap);
-            //_screen.InitSettingsFromConfig();
+
             CalibrationUserControl.Refresh();
             _screenView.Refresh(Configuration.Configuration.Instance.Settings.ControlPointsMode, Configuration.Configuration.Instance.Settings.ShowWireframe);
         }
@@ -331,7 +325,6 @@ namespace PanoBeam
             }
             var xmlSerializer = new XmlSerializer(typeof(Configuration.Configuration));
 
-            //_screen.UpdateConfig();
             var projectorsData = _screen.GetProjectorsData();
             for(var i = 0;i<projectorsData.Length;i++)
             {

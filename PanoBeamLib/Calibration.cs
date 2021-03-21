@@ -21,7 +21,7 @@ namespace PanoBeamLib
             _projectors = projectors;
             // TODO Marco: Kamera oder File
             string imagePath;
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+
             if(Helpers.CameraCalibration)
             {
                 imagePath = Helpers.TempDir;
@@ -240,7 +240,7 @@ namespace PanoBeamLib
         {
             var dx = scaleX * (controlPoint2.DetectedShape.Blob.CenterOfGravity.X - controlPoint1.DetectedShape.Blob.CenterOfGravity.X);
             var dx2 = (int)Math.Round(dx / 2f, MidpointRounding.AwayFromZero);
-            // ReSharper disable once InconsistentNaming
+
             var dx2r = (int)Math.Round(dx - dx2, MidpointRounding.AwayFromZero);
             if (dx2 == 0)
             {
@@ -283,7 +283,7 @@ namespace PanoBeamLib
         {
             var dy = scaleY * (controlPoint2.DetectedShape.Blob.CenterOfGravity.Y - controlPoint1.DetectedShape.Blob.CenterOfGravity.Y);
             var dy2 = (int)Math.Round(dy / 2f, MidpointRounding.AwayFromZero);
-            // ReSharper disable once InconsistentNaming
+
             var dy2r = (int)Math.Round(dy - dy2, MidpointRounding.AwayFromZero);
 
             if (dy2 == 0)

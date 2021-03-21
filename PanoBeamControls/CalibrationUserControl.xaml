@@ -35,7 +35,6 @@
             <StackPanel Orientation="Vertical" Margin="10,0,0,10" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <Button Content="Starten" Command="{Binding StartCommand}"/>
-                    <!--<Button Content="Aktualisieren" Command="{Binding UpdateSettingsCommand}" Margin="10,0,0,0"/>-->
                 </StackPanel>
                 <GroupBox Header="Kontrollpunkt-Modus" HorizontalAlignment="Left">
                     <StackPanel Orientation="Vertical">
