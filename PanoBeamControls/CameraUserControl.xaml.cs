@@ -2,6 +2,7 @@
 using PanoBeam.Events.Events;
 using System;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.Threading;
 using System.Windows;
 using System.Windows.Documents;
@@ -9,11 +10,15 @@ using System.Windows.Media;
 
 namespace PanoBeam.Controls
 {
+    public delegate void CalibrationStartDelegateNeu(int patternSize, System.Drawing.Size patternCount);
     /// <summary>
     /// Interaction logic for CameraUserControl.xaml
     /// </summary>
     public partial class CameraUserControl
     {
+        public event CalibrationStartDelegateNeu Start;
+        public event EventHandler Cancel;
+        public event EventHandler Continue;
         CroppingAdorner _clp;
         FrameworkElement _felCur;
         private int _imageWidth;
@@ -24,9 +29,24 @@ namespace PanoBeam.Controls
         {
             InitializeComponent();
             Dispatcher.ShutdownStarted += Dispatcher_ShutdownStarted;
-            _viewModel = new CameraUserControlViewModel {ParentWindow = Process.GetCurrentProcess().MainWindowHandle};
+            _viewModel = new CameraUserControlViewModel {
+                ParentWindow = Process.GetCurrentProcess().MainWindowHandle,
+                StartAction = RaiseStart,
+                CancelAction = RaiseCancel,
+                ContinueAction = RaiseContinue
+            };
             _viewModel.AddCropAdorner += AddCropAdorner;
             DataContext = _viewModel;
+        }
+
+        public void SetInProgress(bool value)
+        {
+            _viewModel.CalibrationInProgress = value;
+        }
+
+        public void SetStepMessage(string message)
+        {
+            _viewModel.CalibrationStepMessage = message;
         }
 
         public Rect GetClippingRectangle()
@@ -112,6 +132,33 @@ namespace PanoBeam.Controls
             var rect = _clp.GetScaledClippingRectangle(_imageWidth, _imageHeight);
             _viewModel.SetClippingRectangle(rect);
             EventHelper.SendEvent<SettingsChanged, EventArgs>(null);
+        }
+
+        public void SaveFrame(string filename)
+        {
+            _viewModel.SaveFrame(filename);
+        }
+
+        public void Refresh()
+        {
+            _viewModel.PatternSize = Configuration.Configuration.Instance.Settings.PatternSize;
+            _viewModel.ControlPointsCountX = Configuration.Configuration.Instance.Settings.PatternCountX;
+            _viewModel.ControlPointsCountY = Configuration.Configuration.Instance.Settings.PatternCountY;
+        }
+
+        private void RaiseStart()
+        {
+            Start?.Invoke(_viewModel.PatternSize, _viewModel.PatternCount);
+        }
+
+        private void RaiseCancel()
+        {
+            Cancel?.Invoke(null, null);
+        }
+
+        private void RaiseContinue()
+        {
+            Continue?.Invoke(null, null);
         }
     }
 }

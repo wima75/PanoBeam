@@ -13,6 +13,7 @@ using PanoBeam.Events;
 using PanoBeam.Events.Events;
 using System.Linq;
 using PanoBeam.Mapper;
+using System.Collections.Generic;
 
 namespace PanoBeam
 {
@@ -28,6 +29,8 @@ namespace PanoBeam
         public TestImagesUserControl TestImagesUserControl { get; }
         private string _configFilename;
         private Point _mousePosition;
+        private List<CalibrationStep> _calibrationSteps;
+        private int _currentCalibrationStep;
 
         public ViewModel(ScreenView screen, MosaicInfo mosaicInfo, MainWindow mainWindow)
         {
@@ -37,6 +40,9 @@ namespace PanoBeam
             CalibrationUserControl = new CalibrationUserControl();
             BlendingUserControl = new BlendingUserControl();
             TestImagesUserControl = new TestImagesUserControl();
+            CameraUserControl.Start += CameraUserControlOnStart;
+            CameraUserControl.Cancel += CameraUserControlOnCancel;
+            CameraUserControl.Continue += CameraUserControlOnContinue;
             CalibrationUserControl.Start += CalibrationUserControlOnStart;
             TestImagesUserControl.ShowImage += TestImagesUserControlOnShowImage;
 
@@ -64,6 +70,7 @@ namespace PanoBeam
         public void Initialize()
         {
             _screenView.Initialize(_screen);
+            CameraUserControl.Refresh();
             CalibrationUserControl.Refresh();
             BlendingUserControl.Refresh();
 
@@ -107,6 +114,66 @@ namespace PanoBeam
         {
             _screenView.ShowImage(image);
         }
+
+        private void CameraUserControlOnStart(int patternSize, Size patternCount)
+        {
+            CameraUserControl.SetInProgress(true);
+            CameraUserControl.SetStepMessage("Bitte auf Weiter klicken, sobald beide Beamer eine weisse Fläche anzeigen.");
+            _calibrationSteps = new[] {
+                new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.White, CalibrationSteps.White }, Filename = Path.Combine(Helpers.TempDir, "capture_white.png"), Message = "Bitte auf Weiter klicken, sobald beide Beamer eine weisse Fläche anzeigen." },
+                new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.White, CalibrationSteps.Black }, Filename = Path.Combine(Helpers.TempDir, "capture_white0.png"), Message = "Bitte auf Weiter klicken, sobald der linke Beamer eine weisse Fläche zeigt." },
+                new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.Pattern, CalibrationSteps.Black}, Filename = Path.Combine(Helpers.TempDir, "capture_pattern0.png"), Message = "Bitte auf Weiter klicken, sobald der linke Beamer ein Muster zeigt." },
+                new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.Black, CalibrationSteps.White}, Filename = Path.Combine(Helpers.TempDir, "capture_white1.png"), Message = "Bitte auf Weiter klicken, sobald der rechte Beamer eine weisse Fläche zeigt." },
+                new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.Black, CalibrationSteps.Pattern}, Filename = Path.Combine(Helpers.TempDir, "capture_pattern1.png"), Message = "Bitte auf Weiter klicken, sobald der rechte Beamer ein Muster zeigt." }
+            }.ToList();
+            EventHelper.SendEvent<CalibrationStarted, EventArgs>(null);
+            _screen.SetPattern(patternSize, patternCount, false, false);
+            _screen.Calibrate(true);
+        }
+
+        private void CameraUserControlOnCancel(object sender, EventArgs e)
+        {
+            CameraUserControl.SetInProgress(false);
+            CameraUserControl.SetStepMessage("");
+        }
+
+        private void CameraUserControlOnContinue(object sender, EventArgs e)
+        {
+            var calibrationStep = _calibrationSteps[_currentCalibrationStep];
+            CameraUserControl.SaveFrame(calibrationStep.Filename);
+            _currentCalibrationStep++;
+
+            if (_currentCalibrationStep >= _calibrationSteps.Count)
+            {
+                _screen.CalibrationEnd();
+                _screen.Detect();
+                _screenView.Refresh(ControlPointsMode.None, false);
+                _screen.Warp();
+                _mainWindow.CalibrationDone();
+                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
+            }
+            else
+            {
+                calibrationStep = _calibrationSteps[_currentCalibrationStep];
+                CameraUserControl.SetStepMessage(calibrationStep.Message);
+                _screen.ShowCalibrationStep(calibrationStep);
+            }
+        }
+
+        //private void SaveImage()
+        //{
+        //    //int count = 0;
+        //    VideoCapture.Instance.SaveFrame = bitmap =>
+        //    {
+        //        //count++;
+        //        //if (count > 2)
+        //        //{
+        //            VideoCapture.Instance.SaveFrame = null;
+        //            bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white.png"), ImageFormat.Png);
+        //            bitmap.Dispose();
+        //        //}
+        //    };
+        //}
 
         private void CalibrationUserControlOnStart(int patternSize, Size patternCount, bool keepCorners)
         {
@@ -287,6 +354,7 @@ namespace PanoBeam
             Configuration.Configuration.Instance.UpdateConfig(config);
             _screen.Update(config.Settings.PatternSize, new Size(config.Settings.PatternCountX, config.Settings.PatternCountY), config.Settings.KeepCorners, config.Settings.ControlPointsInsideOverlap);
             _screen.UpdateProjectorsFromConfig(ProjectorMapper.MapProjectorsData(Configuration.Configuration.Instance.Projectors));
+            CameraUserControl.Refresh();
             CalibrationUserControl.Refresh();
             BlendingUserControl.Refresh();
             _screenView.Refresh(config.Settings.ControlPointsMode, config.Settings.ShowWireframe);
@@ -305,7 +373,7 @@ namespace PanoBeam
             }
             Configuration.Configuration.Instance.Settings.UpdateSettings(settings);
             _screen.Update(settings.PatternSize, new Size(settings.PatternCountX, settings.PatternCountY), settings.KeepCorners, settings.ControlPointsInsideOverlap);
-
+            CameraUserControl.Refresh();
             CalibrationUserControl.Refresh();
             _screenView.Refresh(Configuration.Configuration.Instance.Settings.ControlPointsMode, Configuration.Configuration.Instance.Settings.ShowWireframe);
         }

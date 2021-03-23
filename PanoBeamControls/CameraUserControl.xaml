@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
+             d:DesignHeight="500" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
+    </UserControl.Resources>
     <Grid Margin="0,10,0,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -15,18 +17,56 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <ComboBox ItemsSource="{Binding Cameras}" SelectedValue="{Binding Camera}" SelectedValuePath="MonikerString"  
+        <GroupBox Grid.Row="0" Grid.Column="0" Header="Kamera" HorizontalAlignment="Left"  VerticalAlignment="Top">
+            <StackPanel Orientation="Vertical">
+                <ComboBox ItemsSource="{Binding Cameras}" SelectedValue="{Binding Camera}" SelectedValuePath="MonikerString"  
                     DisplayMemberPath="Name" HorizontalAlignment="Left" VerticalAlignment="Top" Width="220" Margin="10,0,0,0" />
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
-            <Button Content="Verbinden" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" Command="{Binding ConnectCommand}"/>
-            <Button Content="Trennen" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" Command="{Binding DisconnectCommand}"/>
-        </StackPanel>
-        <Button Grid.Row="1" Grid.Column="1" Content="Kamera-Einstellungen" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1" Margin="0,10,0,0">
+                    <Button Content="Verbinden" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" Command="{Binding ConnectCommand}"/>
+                    <Button Content="Trennen" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" Command="{Binding DisconnectCommand}"/>
+                </StackPanel>
+                <Button Content="Kamera-Einstellungen" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"
                 Command="{Binding SettingsCommand}" />
+
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Grid.Row="0" Grid.Column="1" Header="Kalibrierung" HorizontalAlignment="Left"  VerticalAlignment="Top" Margin="10,0,0,0">
+            <StackPanel Orientation="Vertical">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Anzahl Kontrollpunkte X-Achse" Grid.Row="0" Grid.Column="0" />
+                    <ComboBox  Grid.Row="0" Grid.Column="1" ItemsSource="{Binding ControlPointsCountXList}" SelectedValue="{Binding ControlPointsCountX}" 
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="10,0,0,10" />
+                    <Label Content="Anzahl Kontrollpunkte Y-Achse" Grid.Row="1" Grid.Column="0" />
+                    <ComboBox  Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ControlPointsCountYList}" SelectedValue="{Binding ControlPointsCountY}" 
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="10,0,0,10" />
+                    <Label Content="Pattern-Grösse" Grid.Row="2" Grid.Column="0" />
+                    <ComboBox  Grid.Row="2" Grid.Column="1" ItemsSource="{Binding PatternSizes}" SelectedValue="{Binding PatternSize}" 
+                    HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="10,0,0,10" />
+                
+                </Grid>
+                <Label Content="{Binding CalibrationStepMessage}" Height="30" />
+                <StackPanel Orientation="Horizontal" Margin="10,0,0,10">
+                    <Button Content="Starten" Command="{Binding StartCommand}" Visibility="{Binding CalibrationNotInProgress, Converter={StaticResource VisibleIfTrueConverter}}"/>
+                    <Button Content="Abbrechen" Command="{Binding CancelCommand}" Visibility="{Binding CalibrationInProgress, Converter={StaticResource VisibleIfTrueConverter}}"/>
+                    <Button Content="Weiter" Margin="10,0,0,0" Command="{Binding ContinueCommand}" Visibility="{Binding CalibrationInProgress, Converter={StaticResource VisibleIfTrueConverter}}"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
         <Border Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" BorderThickness="1" BorderBrush="Black" Margin="20,18,20,22">
             <AdornerDecorator>
                 <Image x:Name="Image" Source="{Binding ImageSource}" />
             </AdornerDecorator>
         </Border>
+
     </Grid>
 </UserControl>

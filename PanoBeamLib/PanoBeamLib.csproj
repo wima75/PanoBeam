@@ -79,6 +79,7 @@
     <Compile Include="Blend\Curve.cs" />
     <Compile Include="Bounds.cs" />
     <Compile Include="Calculations.cs" />
+    <Compile Include="CalibrationStep.cs" />
     <Compile Include="ControlPoint.cs" />
     <Compile Include="CurvePoint.cs" />
     <Compile Include="Enums.cs" />

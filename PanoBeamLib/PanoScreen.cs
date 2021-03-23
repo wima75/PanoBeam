@@ -277,7 +277,7 @@ namespace PanoBeamLib
                 SaveWhiteFull();
             }
 
-            VideoCapture.Instance.Stop();
+            /*VideoCapture.Instance.Stop();
             // TODO Marco: Kamera oder File
             if (Helpers.CameraCalibration)
             {
@@ -286,7 +286,7 @@ namespace PanoBeamLib
             else
             {
                 VideoCapture.Instance.StartFromFile(true);
-            }
+            }*/
             SaveCursorPositionIntern();
             ShowImage?.Invoke(Path.Combine(Helpers.TempDir, "whitefull.png"));
             if (!Helpers.IsDevComputer)
@@ -298,7 +298,37 @@ namespace PanoBeamLib
                 }
             }
             RestoreCursorPositionIntern();
-            AwaitProjectorsReady(WhiteWhiteDone, OnCalibrationCanceled, new [] { CalibrationSteps.White, CalibrationSteps.White});
+            //AwaitProjectorsReady(WhiteWhiteDone, OnCalibrationCanceled, new [] { CalibrationSteps.White, CalibrationSteps.White});
+        }
+
+        public void ShowCalibrationStep(CalibrationStep calibrationStep)
+        {
+            SaveCursorPositionIntern();
+            if (!Helpers.IsDevComputer)
+            {
+                for (var i = 0; i < _projectors.Length; i++)
+                {
+                    var p = _projectors[i];
+                    float[] image;
+                    if (calibrationStep.CalibrationSteps[i] == CalibrationSteps.White)
+                    {
+                        image = _white;
+                    } else if (calibrationStep.CalibrationSteps[i] == CalibrationSteps.Black)
+                    {
+                        image = _black;
+                    } else
+                    {
+                        image = p.Pattern;
+                    }
+                    var errorCode = NvApi.ShowImage(p.DisplayId, image, p.Resolution.Width, p.Resolution.Height);
+                    HandleNvApiError(errorCode);
+                }
+                /*var errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _white, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+                HandleNvApiError(errorCode);
+                errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _black, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
+                HandleNvApiError(errorCode);*/
+            }
+            RestoreCursorPositionIntern();
         }
 
         private void SavePatternFull()
@@ -487,7 +517,6 @@ namespace PanoBeamLib
             return blendData;
         }
 
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private float[] GetBlackLevelData(int projector)
         {
             var blxList = new List<int>();
@@ -584,7 +613,6 @@ namespace PanoBeamLib
             return offsetList;
         }
 
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
         private BlackLevelData GetBlackLevelData()
         {
             var blacklevelData = new BlackLevelData();
@@ -604,128 +632,128 @@ namespace PanoBeamLib
             return blacklevelData;
         }
 
-        private void WhiteWhiteDone()
-        {
-            int count = 0;
-            VideoCapture.Instance.SaveFrame = bitmap =>
-            {
-                count++;
-                if (count > 2)
-                {
-                    VideoCapture.Instance.SaveFrame = null;
-                    bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white.png"), ImageFormat.Png);
-                    bitmap.Dispose();
-                    SaveCursorPositionIntern();
-                    if (!Helpers.IsDevComputer)
-                    {
-                        var errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _white, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
-                        HandleNvApiError(errorCode);
-                         errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _black, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
-                        HandleNvApiError(errorCode);
-                    }
-                    RestoreCursorPositionIntern();
-                    AwaitProjectorsReady(WhiteBlackDone, OnCalibrationCanceled, new[] { CalibrationSteps.White, CalibrationSteps.Black });
-                }
-            };
-        }
+        //private void WhiteWhiteDone()
+        //{
+        //    int count = 0;
+        //    VideoCapture.Instance.SaveFrame = bitmap =>
+        //    {
+        //        count++;
+        //        if (count > 2)
+        //        {
+        //            VideoCapture.Instance.SaveFrame = null;
+        //            bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white.png"), ImageFormat.Png);
+        //            bitmap.Dispose();
+        //            SaveCursorPositionIntern();
+        //            if (!Helpers.IsDevComputer)
+        //            {
+        //                var errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _white, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+        //                HandleNvApiError(errorCode);
+        //                 errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _black, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
+        //                HandleNvApiError(errorCode);
+        //            }
+        //            RestoreCursorPositionIntern();
+        //            AwaitProjectorsReady(WhiteBlackDone, OnCalibrationCanceled, new[] { CalibrationSteps.White, CalibrationSteps.Black });
+        //        }
+        //    };
+        //}
 
-        private void WhiteBlackDone()
-        {
-            VideoCapture.Instance.SaveFrame = bitmap =>
-            {
-                VideoCapture.Instance.SaveFrame = null;
-                bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white0.png"), ImageFormat.Png);
-                bitmap.Dispose();
-                SaveCursorPositionIntern();
-                if (!Helpers.IsDevComputer)
-                {
-                    var errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _black, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
-                    HandleNvApiError(errorCode);
-                    if (ShowImage == null)
-                    {
-                        errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _projectors[0].Pattern, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
-                        HandleNvApiError(errorCode);
-                    }
-                    else
-                    {
-                        errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _white, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
-                        HandleNvApiError(errorCode);
-                        ShowImage(Path.Combine(Helpers.TempDir, "p0full.png"));
-                    }
-                }
-                RestoreCursorPositionIntern();
-                AwaitProjectorsReady(PatternBlackDone, OnCalibrationCanceled, new[] { CalibrationSteps.Pattern, CalibrationSteps.Black });
-            };
-        }
+        //private void WhiteBlackDone()
+        //{
+        //    VideoCapture.Instance.SaveFrame = bitmap =>
+        //    {
+        //        VideoCapture.Instance.SaveFrame = null;
+        //        bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white0.png"), ImageFormat.Png);
+        //        bitmap.Dispose();
+        //        SaveCursorPositionIntern();
+        //        if (!Helpers.IsDevComputer)
+        //        {
+        //            var errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _black, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
+        //            HandleNvApiError(errorCode);
+        //            if (ShowImage == null)
+        //            {
+        //                errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _projectors[0].Pattern, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+        //                HandleNvApiError(errorCode);
+        //            }
+        //            else
+        //            {
+        //                errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _white, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+        //                HandleNvApiError(errorCode);
+        //                ShowImage(Path.Combine(Helpers.TempDir, "p0full.png"));
+        //            }
+        //        }
+        //        RestoreCursorPositionIntern();
+        //        AwaitProjectorsReady(PatternBlackDone, OnCalibrationCanceled, new[] { CalibrationSteps.Pattern, CalibrationSteps.Black });
+        //    };
+        //}
 
-        private void PatternBlackDone()
-        {
-            VideoCapture.Instance.SaveFrame = bitmap =>
-            {
-                VideoCapture.Instance.SaveFrame = null;
-                bitmap.Save(Path.Combine(Helpers.TempDir, "capture_pattern0.png"), ImageFormat.Png);
-                bitmap.Dispose();
-                SaveCursorPositionIntern();
-                if (!Helpers.IsDevComputer)
-                {
-                    var errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _black, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
-                    HandleNvApiError(errorCode);
-                    errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _white, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
-                    HandleNvApiError(errorCode);
-                    ShowImage?.Invoke(Path.Combine(Helpers.TempDir, "whitefull.png"));
-                }
-                RestoreCursorPositionIntern();
-                AwaitProjectorsReady(BlackWhiteDone, OnCalibrationCanceled, new[] { CalibrationSteps.Black, CalibrationSteps.White });
-            };
-        }
+        //private void PatternBlackDone()
+        //{
+        //    VideoCapture.Instance.SaveFrame = bitmap =>
+        //    {
+        //        VideoCapture.Instance.SaveFrame = null;
+        //        bitmap.Save(Path.Combine(Helpers.TempDir, "capture_pattern0.png"), ImageFormat.Png);
+        //        bitmap.Dispose();
+        //        SaveCursorPositionIntern();
+        //        if (!Helpers.IsDevComputer)
+        //        {
+        //            var errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _black, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+        //            HandleNvApiError(errorCode);
+        //            errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _white, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
+        //            HandleNvApiError(errorCode);
+        //            ShowImage?.Invoke(Path.Combine(Helpers.TempDir, "whitefull.png"));
+        //        }
+        //        RestoreCursorPositionIntern();
+        //        AwaitProjectorsReady(BlackWhiteDone, OnCalibrationCanceled, new[] { CalibrationSteps.Black, CalibrationSteps.White });
+        //    };
+        //}
 
-        private void BlackWhiteDone()
-        {
-            VideoCapture.Instance.SaveFrame = bitmap =>
-            {
-                VideoCapture.Instance.SaveFrame = null;
-                bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white1.png"), ImageFormat.Png);
-                bitmap.Dispose();
-                SaveCursorPositionIntern();
-                if (!Helpers.IsDevComputer)
-                {
-                    var errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _black, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
-                    HandleNvApiError(errorCode);
-                    if (ShowImage == null)
-                    {
-                        errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _projectors[1].Pattern, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
-                        HandleNvApiError(errorCode);
-                    }
-                    else
-                    {
-                        errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _white, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
-                        HandleNvApiError(errorCode);
-                        ShowImage(Path.Combine(Helpers.TempDir, "p1full.png"));
-                    }
-                }
-                RestoreCursorPositionIntern();
-                AwaitProjectorsReady(BlackPatternDone, OnCalibrationCanceled, new[] { CalibrationSteps.Black, CalibrationSteps.Pattern });
-            };
-        }
+        //private void BlackWhiteDone()
+        //{
+        //    VideoCapture.Instance.SaveFrame = bitmap =>
+        //    {
+        //        VideoCapture.Instance.SaveFrame = null;
+        //        bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white1.png"), ImageFormat.Png);
+        //        bitmap.Dispose();
+        //        SaveCursorPositionIntern();
+        //        if (!Helpers.IsDevComputer)
+        //        {
+        //            var errorCode = NvApi.ShowImage(_projectors[0].DisplayId, _black, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+        //            HandleNvApiError(errorCode);
+        //            if (ShowImage == null)
+        //            {
+        //                errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _projectors[1].Pattern, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
+        //                HandleNvApiError(errorCode);
+        //            }
+        //            else
+        //            {
+        //                errorCode = NvApi.ShowImage(_projectors[1].DisplayId, _white, _projectors[1].Resolution.Width, _projectors[1].Resolution.Height);
+        //                HandleNvApiError(errorCode);
+        //                ShowImage(Path.Combine(Helpers.TempDir, "p1full.png"));
+        //            }
+        //        }
+        //        RestoreCursorPositionIntern();
+        //        AwaitProjectorsReady(BlackPatternDone, OnCalibrationCanceled, new[] { CalibrationSteps.Black, CalibrationSteps.Pattern });
+        //    };
+        //}
 
-        private void BlackPatternDone()
-        {
-            VideoCapture.Instance.SaveFrame = bitmap =>
-            {
-                VideoCapture.Instance.SaveFrame = null;
-                bitmap.Save(Path.Combine(Helpers.TempDir, "capture_pattern1.png"), ImageFormat.Png);
-                bitmap.Dispose();
-                SaveCursorPositionIntern();
-                if (!Helpers.IsDevComputer)
-                {
-                    var displayIds = new[] { _projectors[0].DisplayId, _projectors[1].DisplayId };
-                    var errorCode = NvApi.UnBlend(displayIds, displayIds.Length, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
-                    HandleNvApiError(errorCode);
-                }
-                RestoreCursorPositionIntern();
-                Detect();
-            };
-        }
+        //private void BlackPatternDone()
+        //{
+        //    VideoCapture.Instance.SaveFrame = bitmap =>
+        //    {
+        //        VideoCapture.Instance.SaveFrame = null;
+        //        bitmap.Save(Path.Combine(Helpers.TempDir, "capture_pattern1.png"), ImageFormat.Png);
+        //        bitmap.Dispose();
+        //        SaveCursorPositionIntern();
+        //        if (!Helpers.IsDevComputer)
+        //        {
+        //            var displayIds = new[] { _projectors[0].DisplayId, _projectors[1].DisplayId };
+        //            var errorCode = NvApi.UnBlend(displayIds, displayIds.Length, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+        //            HandleNvApiError(errorCode);
+        //        }
+        //        RestoreCursorPositionIntern();
+        //        Detect();
+        //    };
+        //}
         
         private float[] Generate(float value)
         {
@@ -735,7 +763,19 @@ namespace PanoBeamLib
             return data;
         }
 
-        private void Detect()
+        public void CalibrationEnd()
+        {
+            SaveCursorPositionIntern();
+            if (!Helpers.IsDevComputer)
+            {
+                var displayIds = new[] { _projectors[0].DisplayId, _projectors[1].DisplayId };
+                var errorCode = NvApi.UnBlend(displayIds, displayIds.Length, _projectors[0].Resolution.Width, _projectors[0].Resolution.Height);
+                HandleNvApiError(errorCode);
+            }
+            RestoreCursorPositionIntern();
+        }
+
+        public void Detect()
         {
             try
             {
