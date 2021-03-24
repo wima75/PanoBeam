@@ -63,14 +63,15 @@ namespace PanoBeam
 
         public void ReportProgress(float progress)
         {
-            if (_controller == null) return;
             _controller.SetMessage(GetProgressMessage(progress));
             _controller.SetProgress(progress);
         }
 
         public void CalibrationDone()
         {
-            _controller?.CloseAsync();
+            Dispatcher.Invoke(async () => {
+                await _controller.CloseAsync();
+            });            
         }
 
         public async void CalibrationError(string message)
@@ -95,19 +96,15 @@ namespace PanoBeam
             return $"Fortschritt: {Math.Round(100f * progress, MidpointRounding.AwayFromZero)}%";
         }
 
-        internal async void AwaitCalculationsReady()
+        internal async void InitializeCalculationProgress()
         {
             var settings = new MetroDialogSettings()
             {
                 AnimateShow = false,
                 AnimateHide = false
             };
-
-            await Dispatcher.Invoke(async () =>
-            {
-                _controller = await this.ShowProgressAsync("Berechnung läuft...", GetProgressMessage(0), settings: settings);
-                _controller.SetCancelable(false);
-            });
+            _controller = await this.ShowProgressAsync("Berechnung läuft...", GetProgressMessage(0), settings: settings);
+            _controller.SetCancelable(false);
         }
 
         internal async void AwaitProjectorsReady(Action continueAction, Action calibrationCanceled, CalibrationSteps[] calibrationSteps)

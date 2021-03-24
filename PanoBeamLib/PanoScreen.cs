@@ -782,9 +782,9 @@ namespace PanoBeamLib
                 var calibration = new Calibration();
                 calibration.Initialize(Resolution, Overlap, _projectors);
                 calibration.DetectProgress += CalibrationOnDetectProgress;
-                AwaitCalculationsReady();
+                //AwaitCalculationsReady();
                 calibration.Detect(ClippingRectangle, _keepCorners);
-                CalibrationDone();
+                //CalibrationDone();
             }
             catch (Exception ex)
             {

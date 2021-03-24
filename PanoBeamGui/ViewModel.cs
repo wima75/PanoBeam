@@ -14,6 +14,7 @@ using PanoBeam.Events.Events;
 using System.Linq;
 using PanoBeam.Mapper;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace PanoBeam
 {
@@ -117,6 +118,7 @@ namespace PanoBeam
 
         private void CameraUserControlOnStart(int patternSize, Size patternCount)
         {
+            _currentCalibrationStep = 0;
             CameraUserControl.SetInProgress(true);
             CameraUserControl.SetStepMessage("Bitte auf Weiter klicken, sobald beide Beamer eine weisse Fläche anzeigen.");
             _calibrationSteps = new[] {
@@ -126,6 +128,17 @@ namespace PanoBeam
                 new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.Black, CalibrationSteps.White}, Filename = Path.Combine(Helpers.TempDir, "capture_white1.png"), Message = "Bitte auf Weiter klicken, sobald der rechte Beamer eine weisse Fläche zeigt." },
                 new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.Black, CalibrationSteps.Pattern}, Filename = Path.Combine(Helpers.TempDir, "capture_pattern1.png"), Message = "Bitte auf Weiter klicken, sobald der rechte Beamer ein Muster zeigt." }
             }.ToList();
+            /*_screen.CalibrationDone = () =>
+            {
+                CalibrationUserControl.SetInProgress(false);
+                _screenView.Refresh(ControlPointsMode.None, false);
+                _screen.Warp();
+                _mainWindow.CalibrationDone();
+                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
+            };*/
+            //_screen.AwaitCalculationsReady = _mainWindow.AwaitCalculationsReady;
+            var rect = CameraUserControl.GetClippingRectangle();
+            _screen.ClippingRectangle = rect.GetRectangle();
             EventHelper.SendEvent<CalibrationStarted, EventArgs>(null);
             _screen.SetPattern(patternSize, patternCount, false, false);
             _screen.Calibrate(true);
@@ -145,12 +158,18 @@ namespace PanoBeam
 
             if (_currentCalibrationStep >= _calibrationSteps.Count)
             {
-                _screen.CalibrationEnd();
-                _screen.Detect();
-                _screenView.Refresh(ControlPointsMode.None, false);
+                _mainWindow.InitializeCalculationProgress();
+                var thread = new Thread(Calculate)
+                {
+                    IsBackground = true,
+                    Priority = ThreadPriority.Normal
+                };
+                thread.Start();
+
+                /*_screenView.Refresh(ControlPointsMode.None, false);
                 _screen.Warp();
                 _mainWindow.CalibrationDone();
-                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
+                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);*/
             }
             else
             {
@@ -158,6 +177,16 @@ namespace PanoBeam
                 CameraUserControl.SetStepMessage(calibrationStep.Message);
                 _screen.ShowCalibrationStep(calibrationStep);
             }
+        }
+
+        private void Calculate()
+        {
+            _screen.CalibrationEnd();
+            _screen.Detect();
+            _screenView.Refresh(ControlPointsMode.None, false);
+            _mainWindow.CalibrationDone();
+            _screen.Warp();
+            EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
         }
 
         //private void SaveImage()
@@ -208,7 +237,8 @@ namespace PanoBeam
             {
                 _screen.AwaitProjectorsReady = AwaitProjectorsReadyAuto;
             }
-            _screen.AwaitCalculationsReady = _mainWindow.AwaitCalculationsReady;
+            
+            //_screen.AwaitCalculationsReady = _mainWindow.AwaitCalculationsReady;
             var rect = CameraUserControl.GetClippingRectangle();
             _screen.ClippingRectangle = rect.GetRectangle();
             

@@ -28,7 +28,7 @@ namespace PanoBeamLib
             }
             else
             {
-                imagePath = @"C:\source\PanoBeam\src\PanoBeam\Calibration\3x3";
+                imagePath = @"M:\Temp\calibration";
             }
             tasks.Parallel.ForEach(_projectors, p => {
                 p.LoadImages(imagePath);
@@ -73,7 +73,8 @@ namespace PanoBeamLib
             corners = Calculations.SortCorners(corners);
             Helpers.SaveImageWithMarkers(_bmpWhite, corners, Path.Combine(Helpers.TempDir, "detect_white.png"), 5);
 
-            tasks.Parallel.ForEach(_projectors, p => {
+            tasks.Parallel.ForEach(_projectors, p =>
+            {
                 p.ClippingRectangle = clippingRectangle;
                 p.SetFullSurface(corners);
                 p.Detect();
@@ -84,21 +85,21 @@ namespace PanoBeamLib
                 }
             });
 
-            var scaleX0 = _projectors[0].Resolution.Width/
+            var scaleX0 = _projectors[0].Resolution.Width /
                           ((_projectors[0].DetectedCorners[1].X - _projectors[0].DetectedCorners[0].X +
-                            _projectors[0].DetectedCorners[2].X - _projectors[0].DetectedCorners[3].X)/2f);
-            var scaleX1 = _projectors[1].Resolution.Width/
+                            _projectors[0].DetectedCorners[2].X - _projectors[0].DetectedCorners[3].X) / 2f);
+            var scaleX1 = _projectors[1].Resolution.Width /
                           ((_projectors[1].DetectedCorners[1].X - _projectors[1].DetectedCorners[0].X +
-                            _projectors[1].DetectedCorners[2].X - _projectors[1].DetectedCorners[3].X)/2f);
-            var scaleY0 = _projectors[0].Resolution.Height/
+                            _projectors[1].DetectedCorners[2].X - _projectors[1].DetectedCorners[3].X) / 2f);
+            var scaleY0 = _projectors[0].Resolution.Height /
                           ((_projectors[0].DetectedCorners[3].Y - _projectors[0].DetectedCorners[0].Y +
-                            _projectors[0].DetectedCorners[2].Y - _projectors[0].DetectedCorners[1].Y)/2f);
-            var scaleY1 = _projectors[1].Resolution.Height/
+                            _projectors[0].DetectedCorners[2].Y - _projectors[0].DetectedCorners[1].Y) / 2f);
+            var scaleY1 = _projectors[1].Resolution.Height /
                           ((_projectors[1].DetectedCorners[3].Y - _projectors[1].DetectedCorners[0].Y +
-                            _projectors[1].DetectedCorners[2].Y - _projectors[1].DetectedCorners[1].Y)/2f);
+                            _projectors[1].DetectedCorners[2].Y - _projectors[1].DetectedCorners[1].Y) / 2f);
 
-            var scaleX = (scaleX0 + scaleX1)/2f;
-            var scaleY = (scaleY0 + scaleY1)/2f;
+            var scaleX = (scaleX0 + scaleX1) / 2f;
+            var scaleY = (scaleY0 + scaleY1) / 2f;
             CalculateAdjustments(scaleX, scaleY);
             if (!keepCorners)
             {
@@ -107,7 +108,8 @@ namespace PanoBeamLib
             // TODO Marco: müssen Kontrollpunkte in einer Linie ausgerichtet werden? Wie?
             CalculateBlackLevelRegion();
 
-            tasks.Parallel.ForEach(_projectors, p => {
+            tasks.Parallel.ForEach(_projectors, p =>
+            {
                 p.InterpolateControlPoints();
                 p.InterpolateBlacklevelControlPoints();
             });
