@@ -44,7 +44,6 @@ namespace PanoBeam
             CameraUserControl.Start += CameraUserControlOnStart;
             CameraUserControl.Cancel += CameraUserControlOnCancel;
             CameraUserControl.Continue += CameraUserControlOnContinue;
-            CalibrationUserControl.Start += CalibrationUserControlOnStart;
             TestImagesUserControl.ShowImage += TestImagesUserControlOnShowImage;
 
             _screen = new PanoScreen
@@ -187,70 +186,6 @@ namespace PanoBeam
             _mainWindow.CalibrationDone();
             _screen.Warp();
             EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
-        }
-
-        //private void SaveImage()
-        //{
-        //    //int count = 0;
-        //    VideoCapture.Instance.SaveFrame = bitmap =>
-        //    {
-        //        //count++;
-        //        //if (count > 2)
-        //        //{
-        //            VideoCapture.Instance.SaveFrame = null;
-        //            bitmap.Save(Path.Combine(Helpers.TempDir, "capture_white.png"), ImageFormat.Png);
-        //            bitmap.Dispose();
-        //        //}
-        //    };
-        //}
-
-        private void CalibrationUserControlOnStart(int patternSize, Size patternCount, bool keepCorners)
-        {
-            EventHelper.SendEvent<CalibrationStarted, EventArgs>(null);
-            CalibrationUserControl.SetInProgress(true);
-            _screen.CalibrationDone = () =>
-            {
-                CalibrationUserControl.SetInProgress(false);
-                _screenView.Refresh(ControlPointsMode.None, false);
-                _screen.Warp();
-                _mainWindow.CalibrationDone();
-                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
-            };
-            _screen.CalibrationError = (message) =>
-            {
-                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
-                CalibrationUserControl.SetInProgress(false);
-                _mainWindow.CalibrationError(message);
-            };
-            _screen.CalibrationCanceled = () =>
-            {
-                EventHelper.SendEvent<CalibrationFinished, EventArgs>(null);
-                CalibrationUserControl.SetInProgress(false);
-            };
-            _screen.SetPattern(patternSize, patternCount, false, false);
-            // TODO Marco: Kamera oder File
-            if(Helpers.CameraCalibration)
-            {
-                _screen.AwaitProjectorsReady = _mainWindow.AwaitProjectorsReady;
-            }
-            else
-            {
-                _screen.AwaitProjectorsReady = AwaitProjectorsReadyAuto;
-            }
-            
-            //_screen.AwaitCalculationsReady = _mainWindow.AwaitCalculationsReady;
-            var rect = CameraUserControl.GetClippingRectangle();
-            _screen.ClippingRectangle = rect.GetRectangle();
-            
-            if (_screen.ControlPointsAdjusted)
-            {
-                _screen.ShowImage = ShowImage;
-                _screen.Calibrate(false);
-            }
-            else
-            {
-                _screen.Calibrate(true);
-            }
         }
 
         private void ShowImage(string file)

@@ -5,22 +5,16 @@ namespace PanoBeam.Controls
     public delegate void CalibrationStartDelegate(int patternSize, Size patternCount, bool keepCorners);
     public partial class CalibrationUserControl
     {
-        public event CalibrationStartDelegate Start;
         private readonly CalibrationUserControlViewModel _viewModel;
 
         public int PatternSize => _viewModel.PatternSize;
 
         public Size PatternCount => _viewModel.PatternCount;
 
-        public void SetInProgress(bool value)
-        {
-            _viewModel.SetInProgress(value);
-        }
-
         public CalibrationUserControl()
         {
             InitializeComponent();
-            _viewModel = new CalibrationUserControlViewModel {StartAction = RaiseStart};
+            _viewModel = new CalibrationUserControlViewModel();
             DataContext = _viewModel;
         }
 
@@ -38,11 +32,6 @@ namespace PanoBeam.Controls
             _viewModel.ShowWireframe = Configuration.Configuration.Instance.Settings.ShowWireframe;
             _viewModel.ControlPointsInsideOverlap = Configuration.Configuration.Instance.Settings.ControlPointsInsideOverlap;
             _viewModel.ImmediateWarp = Configuration.Configuration.Instance.Settings.ImmediateWarp;
-        }
-
-        private void RaiseStart()
-        {
-            Start?.Invoke(_viewModel.PatternSize, _viewModel.PatternCount, _viewModel.KeepCorners);
         }
     }
 }

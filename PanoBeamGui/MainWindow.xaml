@@ -38,9 +38,11 @@
                     <MenuItem Header="Laden" Command="{Binding LoadCommand}" />
                     <MenuItem Header="Speichern" Command="{Binding SaveCommand}" />
                 </MenuItem>
-                <MenuItem Header="Warp/Blend">
+                <MenuItem Header="Warp">
                     <MenuItem Header="Warp" Command="{Binding WarpCommand}" />
                     <MenuItem Header="UnWarp" Command="{Binding UnWarpCommand}" />
+                </MenuItem>
+                <MenuItem Header="Blend">
                     <MenuItem Header="Blend" Command="{Binding BlendCommand}" />
                     <MenuItem Header="UnBlend" Command="{Binding UnBlendCommand}" />
                 </MenuItem>

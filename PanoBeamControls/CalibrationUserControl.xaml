@@ -33,9 +33,6 @@
             <ComboBox  Grid.Row="2" Grid.Column="1" ItemsSource="{Binding PatternSizes}" SelectedValue="{Binding PatternSize}" 
                 HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="10,0,0,10" />
             <StackPanel Orientation="Vertical" Margin="10,0,0,10" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2">
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <Button Content="Starten" Command="{Binding StartCommand}"/>
-                </StackPanel>
                 <GroupBox Header="Kontrollpunkt-Modus" HorizontalAlignment="Left">
                     <StackPanel Orientation="Vertical">
                         <RadioButton Content="Keine" GroupName="ControlPointsMode" Margin="0,0,0,10" IsChecked="{Binding ControlPointsMode, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static config:ControlPointsMode.None}}"/>
