@@ -443,9 +443,7 @@ namespace PanoBeamLib
         private static void Interpolate(List<ControlPoint> controlPoints)
         {
             var ecken = controlPoints.Where(cp => cp.ControlPointType == ControlPointType.IsEcke).ToArray();
-            // ReSharper disable once InconsistentNaming
             var eckenXYF = ecken.Select(p => new PointF(p.X, p.Y)).ToArray();
-            // ReSharper disable once InconsistentNaming
             var eckenUVF = ecken.Select(p => new PointF(p.U, p.V)).ToArray();
 
             var transformationMatrix = Tools.Homography(eckenUVF, eckenXYF);

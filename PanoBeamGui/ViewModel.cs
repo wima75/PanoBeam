@@ -127,6 +127,11 @@ namespace PanoBeam
                 new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.Black, CalibrationSteps.White}, Filename = Path.Combine(Helpers.TempDir, "capture_white1.png"), Message = "Bitte auf Weiter klicken, sobald der rechte Beamer eine weisse Fläche zeigt." },
                 new CalibrationStep { CalibrationSteps = new [] { CalibrationSteps.Black, CalibrationSteps.Pattern}, Filename = Path.Combine(Helpers.TempDir, "capture_pattern1.png"), Message = "Bitte auf Weiter klicken, sobald der rechte Beamer ein Muster zeigt." }
             }.ToList();
+            _screen.CalibrationError = (message) =>
+            {
+                CameraUserControl.SetInProgress(false);
+                _mainWindow.CalibrationError(message);
+            };
             /*_screen.CalibrationDone = () =>
             {
                 CalibrationUserControl.SetInProgress(false);
@@ -164,6 +169,7 @@ namespace PanoBeam
                     Priority = ThreadPriority.Normal
                 };
                 thread.Start();
+                CameraUserControl.SetInProgress(false);
 
                 /*_screenView.Refresh(ControlPointsMode.None, false);
                 _screen.Warp();

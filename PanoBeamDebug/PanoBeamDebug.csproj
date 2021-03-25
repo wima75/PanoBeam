@@ -64,6 +64,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
@@ -73,6 +74,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PanoBeamConfiguration\PanoBeam.Configuration.csproj">
+      <Project>{9EB07904-14E6-444A-99C3-D9EBB5C09593}</Project>
+      <Name>PanoBeam.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PanoBeamLib\PanoBeamLib.csproj">
       <Project>{834e96eb-09d2-40d0-8524-ab46a372ef44}</Project>
       <Name>PanoBeamLib</Name>

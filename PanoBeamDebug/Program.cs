@@ -1,11 +1,7 @@
 ﻿using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
 using PanoBeamLib;
-using Image = System.Drawing.Image;
-using System;
+using System.Windows;
+using PanoBeam.Configuration;
 
 namespace PanoBeamDebug
 {
@@ -15,7 +11,24 @@ namespace PanoBeamDebug
         {
             //new Program().DetectSurface();
             //new Program().DetectShapes();
-            new Program().WarpTest();
+            //new Program().WarpTest();
+            new Program().Detect();
+        }
+
+        public void Detect()
+        {
+            var screen = new PanoScreen
+            {
+                Resolution = new System.Drawing.Size(3240, 1080),
+                Overlap = 600,
+            };
+            screen.AddProjectors(0, 1);
+            screen.SetPattern(80, new System.Drawing.Size(10, 7), false, false);
+
+            screen.ClippingRectangle = new System.Drawing.Rectangle(25, 26, 1849, 841);
+
+            screen.Detect();
+
         }
 
         public void WarpTest()
@@ -25,7 +38,7 @@ namespace PanoBeamDebug
             Console.ReadKey();*/
         }
 
-        public void DetectShapes()
+        /*public void DetectShapes()
         {
             int count = 40;
             int minSize = 5;
@@ -80,6 +93,6 @@ namespace PanoBeamDebug
         {
             var saveBitmap = (Bitmap)bmp.Clone();
             saveBitmap.Save(fileName);
-        }
+        }*/
     }
 }

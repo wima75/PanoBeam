@@ -151,6 +151,25 @@ namespace PanoBeamLib
             cp7.X += dx;
         }
 
+        //private void CalibrateCorners_neu(float scaleX, float scaleY)
+        //{
+        //    var topLeft0 = _projectors[0].ControlPoints.First();
+        //    var topRight0 = _projectors[0].ControlPoints.Last(cp => cp.V == topLeft0.V);
+
+        //    var topLeft1 = _projectors[1].ControlPoints.First();
+        //    var topRight1 = _projectors[1].ControlPoints.Last(cp => cp.V == topLeft1.V);
+
+        //    var w1 = topRight1.DetectedShape.Blob.CenterOfGravity.X - topLeft0.DetectedShape.Blob.CenterOfGravity.X;
+        //    var h1 = topLeft1.DetectedShape.Blob.CenterOfGravity.Y - topRight1.DetectedShape.Blob.CenterOfGravity.Y;
+
+        //    var a = topRight0.DetectedShape.Blob.CenterOfGravity.X - topLeft1.DetectedShape.Blob.CenterOfGravity.X;
+        //    var b = topRight1.DetectedShape.Blob.CenterOfGravity.X - topRight0.DetectedShape.Blob.CenterOfGravity.X;
+        //    var h = h1 * a / (a + b);
+        //    var dy = (int)Math.Round(scaleY * (topLeft1.DetectedShape.Blob.CenterOfGravity.Y - topRight0.DetectedShape.Blob.CenterOfGravity.Y - h));
+
+        //    topRight0.Y += dy;
+        //}
+
         private void CalibrateCorners(float scaleX, float scaleY)
         {
             var topleft = _projectors[0].ControlPoints.First();
@@ -249,35 +268,57 @@ namespace PanoBeamLib
             }
             else if (dx2 > 0)
             {
-                controlPoint1.X += dx2;
-                controlPoint2.X -= dx2r;
+                if (!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Left))
+                {
+                    controlPoint1.X += dx2 + dx2r;
+                }
+                else if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Right))
+                {
+                    controlPoint2.X -= dx2 + dx2r;
+                }
+                else
+                {
+                    controlPoint1.X += dx2;
+                    controlPoint2.X -= dx2r;
+                }
 
-                if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Right) && controlPoint1.X > controlPoint1.U)
-                {
-                    controlPoint2.X -= controlPoint1.X - controlPoint1.U;
-                    controlPoint1.X = controlPoint1.U;
-                }
-                else if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Left) && controlPoint2.X < controlPoint2.U)
-                {
-                    controlPoint1.X += controlPoint2.U - controlPoint2.X;
-                    controlPoint2.X = controlPoint2.U;
-                }
+                //if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Right) && controlPoint1.X > controlPoint1.U)
+                //{
+                //    controlPoint2.X -= controlPoint1.X - controlPoint1.U;
+                //    controlPoint1.X = controlPoint1.U;
+                //}
+                //else if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Left) && controlPoint2.X < controlPoint2.U)
+                //{
+                //    controlPoint1.X += controlPoint2.U - controlPoint2.X;
+                //    controlPoint2.X = controlPoint2.U;
+                //}
             }
             else
             {
-                controlPoint1.X += dx2;
-                controlPoint2.X -= dx2r;
+                if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Left))
+                {
+                    controlPoint2.X += -(dx2 + dx2r);
+                }
+                else if (!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Right))
+                {
+                    controlPoint1.X -= -(dx2 + dx2r);
+                }
+                else
+                {
+                    controlPoint1.X += dx2;
+                    controlPoint2.X -= dx2r;
+                }
 
-                if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Left) && controlPoint1.X < controlPoint1.U)
-                {
-                    controlPoint2.X += controlPoint1.U - controlPoint1.X;
-                    controlPoint1.X = controlPoint1.U;
-                }
-                else if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Right) && controlPoint2.X > controlPoint2.U)
-                {
-                    controlPoint1.X -= controlPoint2.X - controlPoint2.U;
-                    controlPoint2.X = controlPoint2.U;
-                }
+                //if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Left) && controlPoint1.X < controlPoint1.U)
+                //{
+                //    controlPoint2.X += controlPoint1.U - controlPoint1.X;
+                //    controlPoint1.X = controlPoint1.U;
+                //}
+                //else if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Right) && controlPoint2.X > controlPoint2.U)
+                //{
+                //    controlPoint1.X -= controlPoint2.X - controlPoint2.U;
+                //    controlPoint2.X = controlPoint2.U;
+                //}
             }
         }
 
@@ -293,34 +334,59 @@ namespace PanoBeamLib
             }
             else if (dy2 > 0)
             {
-                controlPoint1.Y += dy2;
-                controlPoint2.Y -= dy2r;
-                if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Down) && controlPoint1.Y > controlPoint1.V)
+                if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Up))
                 {
-                    controlPoint2.Y -= controlPoint1.Y - controlPoint1.V;
-                    controlPoint1.Y = controlPoint1.V;
+                    controlPoint1.Y += dy2 + dy2r;
                 }
-                else if (!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Up) && controlPoint2.Y < controlPoint2.V)
+                else if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Down))
                 {
-                    controlPoint1.Y += controlPoint2.Y - controlPoint2.V;
-                    controlPoint2.Y = controlPoint2.V;
+                    controlPoint2.Y -= dy2 + dy2r;
                 }
+                else
+                {
+                    controlPoint1.Y += dy2;
+                    controlPoint2.Y -= dy2r;
+                }
+
+                //controlPoint1.Y += dy2;
+                //controlPoint2.Y -= dy2r;
+                //if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Down) && controlPoint1.Y > controlPoint1.V)
+                //{
+                //    controlPoint2.Y -= controlPoint1.Y - controlPoint1.V;
+                //    controlPoint1.Y = controlPoint1.V;
+                //}
+                //else if (!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Up) && controlPoint2.Y < controlPoint2.V)
+                //{
+                //    controlPoint1.Y += controlPoint2.Y - controlPoint2.V;
+                //    controlPoint2.Y = controlPoint2.V;
+                //}
             }
             else
             {
-                controlPoint1.Y += dy2;
-                controlPoint2.Y -= dy2r;
+                if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Up))
+                {
+                    controlPoint2.Y += -(dy2 + dy2r);
+                }
+                else if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Down))
+                {
+                    controlPoint1.Y -= -(dy2 + dy2r);
+                }
+                else
+                {
+                    controlPoint1.Y += dy2;
+                    controlPoint2.Y -= dy2r;
+                }
 
-                if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Up) && controlPoint1.Y < controlPoint1.V)
-                {
-                    controlPoint2.Y -= controlPoint1.V - controlPoint1.Y;
-                    controlPoint1.Y = controlPoint1.V;
-                }
-                else if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Down) && controlPoint2.Y > controlPoint2.V)
-                {
-                    controlPoint1.Y -= controlPoint2.Y - controlPoint2.V;
-                    controlPoint2.Y = controlPoint2.V;
-                }
+                //if (!controlPoint1.ControlPointDirections.HasFlag(ControlPointDirections.Up) && controlPoint1.Y < controlPoint1.V)
+                //{
+                //    controlPoint2.Y -= controlPoint1.V - controlPoint1.Y;
+                //    controlPoint1.Y = controlPoint1.V;
+                //}
+                //else if(!controlPoint2.ControlPointDirections.HasFlag(ControlPointDirections.Down) && controlPoint2.Y > controlPoint2.V)
+                //{
+                //    controlPoint1.Y -= controlPoint2.Y - controlPoint2.V;
+                //    controlPoint2.Y = controlPoint2.V;
+                //}
             }
         }
 
